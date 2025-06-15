@@ -191,31 +191,48 @@
   
     const encerramentoFinal = "Nosso amor é uma história que só está começando... <br> te amo pra sempre 💖";
 
-  
     let index = 0;
-  
-    function mostrarProximo() {
-        const msg = document.getElementById('mensagem');
-        const gif = document.getElementById('gif');
+    let carregando = false;
+    
+   function mostrarProximo() {
+  if (carregando) return; // bloqueia cliques enquanto carrega
 
-        if (index < mensagens.length) {
-            msg.textContent = mensagens[index];
-            gif.style.opacity = '0'; // Oculta antes de carregar
-            gif.onload = () => {
-            gif.style.display = 'block';
-            gif.style.opacity = '1'; // Suavemente visível
-            };
-            gif.src = gifs[index];
-            index++;
-        } else {
-            msg.classList.add('encerramento-final');
-            msg.innerHTML = encerramentoFinal;
+  const msg = document.getElementById('mensagem');
+  const gif = document.getElementById('gif');
 
-            gif.style.display = 'none';
-            msg.onclick = null;
-            gif.onclick = null;
-        }
-    }       
+  if (index < mensagens.length) {
+    carregando = true; // começa o bloqueio
+
+    const novaSrc = gifs[index];
+    const novaMsg = mensagens[index];
+
+    // Pré-carrega a imagem
+    const imgTemp = new Image();
+    imgTemp.src = novaSrc;
+    imgTemp.onload = () => {
+      // Quando carregar a imagem, atualiza tudo
+      msg.textContent = novaMsg;
+      gif.src = novaSrc;
+      gif.style.opacity = '0';
+      gif.style.display = 'block';
+
+      // Força um fade-in suave
+      setTimeout(() => {
+        gif.style.opacity = '1';
+      }, 50);
+
+      index++;
+      carregando = false; // libera clique
+    };
+  } else {
+    // Última mensagem com estilo especial
+    msg.classList.add('encerramento-final');
+    msg.innerHTML = encerramentoFinal;
+    gif.style.display = 'none';
+    msg.onclick = null;
+    gif.onclick = null;
+  }
+}
 
   
     function criarCoracao() {
