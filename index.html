@@ -91,11 +91,21 @@
       opacity: 1;
     }
 
+    /* Hover do #mensagem */
     #mensagem:hover {
       background-color: rgb(231 0 77 / 80%);
       color: #f8bbd0;
       transform: scale(1.05);
       box-shadow: 0 6px 20px rgba(231, 0, 77, 0.9);
+    }
+
+    /* Mesma aparência quando a classe 'hover' for adicionada via JS */
+    #mensagem.hover {
+      background-color: rgb(231 0 77 / 80%);
+      color: #f8bbd0;
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(231, 0, 77, 0.9);
+      transition: all 0.4s ease;
     }
 
     #encerramento {
@@ -194,47 +204,46 @@
     let index = 0;
     let carregando = false;
     
-   function mostrarProximo() {
-  if (carregando) return; // bloqueia cliques enquanto carrega
+    function mostrarProximo() {
+      if (carregando) return; // bloqueia cliques enquanto carrega
 
-  const msg = document.getElementById('mensagem');
-  const gif = document.getElementById('gif');
+      const msg = document.getElementById('mensagem');
+      const gif = document.getElementById('gif');
 
-  if (index < mensagens.length) {
-    carregando = true; // começa o bloqueio
+      if (index < mensagens.length) {
+        carregando = true; // começa o bloqueio
 
-    const novaSrc = gifs[index];
-    const novaMsg = mensagens[index];
+        const novaSrc = gifs[index];
+        const novaMsg = mensagens[index];
 
-    // Pré-carrega a imagem
-    const imgTemp = new Image();
-    imgTemp.src = novaSrc;
-    imgTemp.onload = () => {
-      // Quando carregar a imagem, atualiza tudo
-      msg.textContent = novaMsg;
-      gif.src = novaSrc;
-      gif.style.opacity = '0';
-      gif.style.display = 'block';
+        // Pré-carrega a imagem
+        const imgTemp = new Image();
+        imgTemp.src = novaSrc;
+        imgTemp.onload = () => {
+          // Quando carregar a imagem, atualiza tudo
+          msg.textContent = novaMsg;
+          gif.src = novaSrc;
+          gif.style.opacity = '0';
+          gif.style.display = 'block';
 
-      // Força um fade-in suave
-      setTimeout(() => {
-        gif.style.opacity = '1';
-      }, 50);
+          // Força um fade-in suave
+          setTimeout(() => {
+            gif.style.opacity = '1';
+          }, 50);
 
-      index++;
-      carregando = false; // libera clique
-    };
-  } else {
-    // Última mensagem com estilo especial
-    msg.classList.add('encerramento-final');
-    msg.innerHTML = encerramentoFinal;
-    gif.style.display = 'none';
-    msg.onclick = null;
-    gif.onclick = null;
-  }
-}
+          index++;
+          carregando = false; // libera clique
+        };
+      } else {
+        // Última mensagem com estilo especial
+        msg.classList.add('encerramento-final');
+        msg.innerHTML = encerramentoFinal;
+        gif.style.display = 'none';
+        msg.onclick = null;
+        gif.onclick = null;
+      }
+    }
 
-  
     function criarCoracao() {
       const coracao = document.createElement('div');
       coracao.classList.add('coracao');
@@ -249,6 +258,19 @@
     }
   
     setInterval(criarCoracao, 400);
+
+    // NOVO: adiciona/remova classe hover em #mensagem quando mouse entrar/sair do gif
+    const mensagem = document.getElementById('mensagem');
+    const gif = document.getElementById('gif');
+
+    gif.addEventListener('mouseenter', () => {
+      mensagem.classList.add('hover');
+    });
+
+    gif.addEventListener('mouseleave', () => {
+      mensagem.classList.remove('hover');
+    });
+
   </script>
   
 </body>
